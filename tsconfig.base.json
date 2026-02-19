@@ -14,7 +14,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@sudoku/api": ["libs/api/src/index.ts"],
+      "@sudoku/board": ["libs/board/src/index.ts"],
+      "@sudoku/game-state": ["libs/game-state/src/index.ts"],
+      "@sudoku/multiplayer": ["libs/multiplayer/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
