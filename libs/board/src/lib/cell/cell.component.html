@@ -1,0 +1,11 @@
+<div
+  class="cell"
+  [class.prefilled]="isPrefilled()"
+  [class.selected]="isSelected()"
+  [class.invalid]="isInvalid()"
+  [attr.tabindex]="isPrefilled() ? -1 : 0"
+  (click)="cellClick.emit()"
+  (keydown)="onKeyDown($event)"
+>
+  {{ value() || '' }}
+</div>

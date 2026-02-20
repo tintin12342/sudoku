@@ -1,1 +1,14 @@
-<p>Board works!</p>
+<div class="sudoku-board">
+  @for (row of rows; track row) {
+    @for (col of cols; track col) {
+      <app-cell
+        [value]="board()[row][col]"
+        [isPrefilled]="isPrefilled(row, col)"
+        [isSelected]="isSelected()(row, col)"
+        [isInvalid]="isInvalid() && board()[row][col] === 0"
+        (cellClick)="onCellClick(row, col)"
+        (valueChange)="onCellValueChange(row, col, $event)"
+      />
+    }
+  }
+</div>

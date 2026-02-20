@@ -1,0 +1,87 @@
+<div class="page-wrapper">
+  <header class="game-header">
+    <h1>Sudoku</h1>
+    <div class="header-meta">
+      <span class="difficulty-badge">{{
+        selectedDifficulty() | titlecase
+      }}</span>
+      @if (gameState.isPlaying()) {
+      <span class="timer">{{ formatTime(gameState.elapsedSeconds()) }}</span>
+      }
+    </div>
+  </header>
+
+  <div class="game-layout">
+    @if (api.isLoading()) {
+    <div class="spinner-container">
+      <mat-spinner diameter="60" />
+    </div>
+    } @else {
+    <app-board
+      [board]="gameState.board()"
+      [initialBoard]="gameState.initialBoard()"
+      [isInvalid]="gameState.gameStatus() === 'invalid'"
+      [selectedCell]="selectedCell()"
+      (cellChange)="onCellChange($event)"
+      (cellSelect)="selectedCell.set($event)"
+    />
+    }
+
+    <div class="side-panel">
+      <div class="controls">
+        <mat-form-field appearance="outline">
+          <mat-label>Difficulty</mat-label>
+          <mat-select
+            [value]="selectedDifficulty()"
+            (selectionChange)="onDifficultyChange($event.value)"
+            [disabled]="api.isLoading()"
+          >
+            @for (d of difficulties; track d) {
+            <mat-option [value]="d">{{ d | titlecase }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="loadBoard()"
+          [disabled]="api.isLoading()"
+        >
+          New Game
+        </button>
+      </div>
+
+      <div class="numpad">
+        @for (n of [1,2,3,4,5,6,7,8,9]; track n) {
+        <button class="numpad-btn" (click)="onNumpadInput(n)">{{ n }}</button>
+        }
+        <button class="numpad-btn erase" (click)="onNumpadInput(0)">✕</button>
+      </div>
+
+      <div class="action-buttons">
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="onValidate()"
+          [disabled]="api.isLoading() || gameState.isSolved()"
+        >
+          Validate
+        </button>
+        <button
+          mat-stroked-button
+          (click)="onSolve()"
+          [disabled]="api.isLoading() || gameState.isSolved()"
+        >
+          Solve
+        </button>
+      </div>
+
+      @if (gameState.isSolved()) {
+      <div class="solved-banner">
+        🎉 Solved in {{ formatTime(gameState.elapsedSeconds()) }}!
+      </div>
+      }
+    </div>
+  </div>
+</div>
