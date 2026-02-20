@@ -77,9 +77,19 @@
         </button>
       </div>
 
+      <div class="status-row">
+        <span class="status-label">Status</span>
+        <span
+          class="status-chip"
+          [ngClass]="'status-' + gameState.gameStatus()"
+        >
+          {{ gameState.gameStatus() | titlecase }}
+        </span>
+      </div>
+
       @if (gameState.isSolved()) {
       <div class="solved-banner">
-        🎉 Solved in {{ formatTime(gameState.elapsedSeconds()) }}!
+        Solved in {{ formatTime(gameState.elapsedSeconds()) }}!
       </div>
       }
     </div>

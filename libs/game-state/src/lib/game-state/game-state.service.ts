@@ -1,7 +1,5 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { Board, Difficulty } from '@sudoku/api';
-
-export type GameStatus = 'idle' | 'playing' | 'solved' | 'invalid';
+import { Board, Difficulty, GameStatus } from '@sudoku/api';
 
 @Injectable({ providedIn: 'root' })
 export class GameStateService {
@@ -15,6 +13,7 @@ export class GameStateService {
   // Computed signals
   readonly isPlaying = computed(() => this.gameStatus() === 'playing');
   readonly isSolved = computed(() => this.gameStatus() === 'solved');
+  readonly isUnsolvable = computed(() => this.gameStatus() === 'unsolvable');
 
   readonly isCellPrefilled = computed(
     () => (row: number, col: number) => this.initialBoard()[row]?.[col] !== 0
@@ -32,7 +31,7 @@ export class GameStateService {
     this.difficulty.set(difficulty);
     this.gameStatus.set('playing');
     this.elapsedSeconds.set(0);
-    this.startTimer();
+    this._startTimer();
   }
 
   setCellValue(row: number, col: number, value: number): void {
@@ -44,8 +43,8 @@ export class GameStateService {
       return newBoard;
     });
 
-    // Reset invalid status back to playing when user edits
-    if (this.gameStatus() === 'invalid') {
+    const resetStatuses: GameStatus[] = ['invalid', 'unsolvable', 'broken'];
+    if (resetStatuses.includes(this.gameStatus())) {
       this.gameStatus.set('playing');
     }
   }
@@ -53,12 +52,12 @@ export class GameStateService {
   applySolution(solution: Board): void {
     this.board.set(solution.map((row) => [...row]));
     this.gameStatus.set('solved');
-    this.stopTimer();
+    this._stopTimer();
   }
 
   setStatus(status: GameStatus): void {
     this.gameStatus.set(status);
-    if (status === 'solved') this.stopTimer();
+    if (status === 'solved') this._stopTimer();
   }
 
   setDifficulty(difficulty: Difficulty): void {
@@ -70,17 +69,17 @@ export class GameStateService {
     this.initialBoard.set([]);
     this.gameStatus.set('idle');
     this.elapsedSeconds.set(0);
-    this.stopTimer();
+    this._stopTimer();
   }
 
-  private startTimer(): void {
-    this.stopTimer();
+  private _startTimer(): void {
+    this._stopTimer();
     this.timerInterval = setInterval(() => {
       this.elapsedSeconds.update((s) => s + 1);
     }, 1000);
   }
 
-  private stopTimer(): void {
+  private _stopTimer(): void {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
       this.timerInterval = null;

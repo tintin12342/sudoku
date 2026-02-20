@@ -1,4 +1,5 @@
 export type Difficulty = 'easy' | 'medium' | 'hard' | 'random';
+export type GameStatus = 'idle' | 'playing' | 'solved' | 'invalid' | 'broken' | 'unsolvable';
 export type Board = number[][];
 
 export interface BoardResponse {
@@ -16,5 +17,5 @@ export interface SolveResponse {
 }
 
 export interface ValidateResponse {
-  status: 'solved' | 'broken';
+  status: 'solved' | 'broken' | 'invalid';
 }

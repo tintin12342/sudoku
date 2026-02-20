@@ -54,16 +54,27 @@ export class GameComponent implements OnInit {
   async onValidate(): Promise<void> {
     try {
       const result = await this.api.validateBoard(this.gameState.board());
-      if (result.status === 'solved') {
-        this.gameState.setStatus('solved');
-        this.snackBar.open('🎉 Congratulations! Puzzle solved!', 'Close', {
-          duration: 5000,
-        });
-      } else {
-        this.gameState.setStatus('invalid');
-        this.snackBar.open('❌ Not quite right. Keep trying!', 'Close', {
-          duration: 3000,
-        });
+
+      switch (result.status) {
+        case 'solved':
+          this.gameState.setStatus('solved');
+          this.snackBar.open('Congratulations! Puzzle solved!', 'Close', {
+            duration: 5000,
+          });
+          break;
+
+        case 'broken':
+          this.gameState.setStatus('broken');
+          this.snackBar.open('Board is broken.', 'Close', {
+            duration: 4000,
+          });
+          break;
+
+        default:
+          this.gameState.setStatus('invalid');
+          this.snackBar.open('Board is invalid. Keep trying!', 'Close', {
+            duration: 3000,
+          });
       }
     } catch {
       this.snackBar.open('Validation failed. Try again.', 'Close', {
@@ -75,9 +86,26 @@ export class GameComponent implements OnInit {
   async onSolve(): Promise<void> {
     try {
       const result = await this.api.solveBoard(this.gameState.board());
-      if (result.status === 'solved') {
-        this.gameState.applySolution(result.solution);
-        this.snackBar.open('✅ Board solved!', 'Close', { duration: 3000 });
+
+      switch (result.status) {
+        case 'solved':
+          this.gameState.applySolution(result.solution);
+          this.snackBar.open('Board solved!', 'Close', { duration: 3000 });
+          break;
+
+        case 'unsolvable':
+          this.gameState.setStatus('unsolvable');
+          this.snackBar.open('This board has no solution.', 'Close', {
+            duration: 4000,
+          });
+          break;
+
+        default:
+          this.gameState.setStatus('broken');
+          this.snackBar.open('Board is broken and cannot be solved.', 'Close', {
+            duration: 4000,
+          });
+          break;
       }
     } catch {
       this.snackBar.open('Could not solve board.', 'Close', { duration: 3000 });
