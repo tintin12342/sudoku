@@ -48,7 +48,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   private readonly _resetStatuses = ['invalid', 'broken', 'unsolvable'];
 
   readonly roomId = this._route.snapshot.paramMap.get('roomId')!;
-  readonly playerId = this.getOrCreatePlayerId();
+  readonly playerId = this._getOrCreatePlayerId();
   readonly selectedCell = signal<{ row: number; col: number } | null>(null);
   private readonly _roomState = toSignal(
     this._multiplayer.joinRoom(this.roomId)
@@ -57,6 +57,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   readonly board = computed(() => this._roomState()?.board ?? []);
   readonly initialBoard = computed(() => this._roomState()?.initialBoard ?? []);
   readonly status = computed(() => this._roomState()?.status ?? 'playing');
+  readonly difficulty = computed(() => this._roomState()?.difficulty ?? 'easy');
   readonly players = computed(() =>
     Object.values(this._roomState()?.players ?? {})
   );
@@ -99,6 +100,19 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     if (this._resetStatuses.includes(this.status())) {
       this._multiplayer.updateStatus(this.roomId, 'playing');
+    }
+  }
+
+  onNumpadInput(value: number): void {
+    const cell = this.selectedCell();
+    if (cell) {
+      const newBoard = this.board().map((row) => [...row]);
+      newBoard[cell.row][cell.col] = value;
+      this._multiplayer.updateBoard(this.roomId, newBoard);
+
+      if (this._resetStatuses.includes(this.status())) {
+        this._multiplayer.updateStatus(this.roomId, 'playing');
+      }
     }
   }
 
@@ -163,7 +177,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this._snackBar.open('Invite link copied!', 'Close', { duration: 2000 });
   }
 
-  private getOrCreatePlayerId(): string {
+  private _getOrCreatePlayerId(): string {
     const key = 'sudoku_player_id';
     let id = sessionStorage.getItem(key);
     if (!id) {

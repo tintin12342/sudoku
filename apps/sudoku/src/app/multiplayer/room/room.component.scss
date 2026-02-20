@@ -1,10 +1,12 @@
 .page-wrapper {
   max-width: 900px;
+  width: 90vw;
   margin: 0 auto;
   padding: 32px 16px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-height: 100%;
 }
 
 .room-header {
@@ -13,6 +15,14 @@
   justify-content: space-between;
   border-bottom: 2px solid #e0e0e0;
   padding-bottom: 12px;
+}
+
+.difficulty-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0, 0.45);
 }
 
 .header-left {
@@ -60,7 +70,8 @@
 
   @media (max-width: 680px) {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+    gap: 16px;
   }
 }
 
@@ -173,6 +184,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: min(90vw, 500px);
-  height: min(90vw, 500px);
+  width: min(80vw, 500px);
+}
+
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.numpad-btn {
+  aspect-ratio: 1;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.1s;
+
+  &:hover {
+    background: #f5a623;
+    border-color: #f5a623;
+    color: white;
+  }
+
+  &.erase {
+    color: #e53935;
+    border-color: #e53935;
+
+    &:hover {
+      background: #e53935;
+      color: white;
+    }
+  }
 }

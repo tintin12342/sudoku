@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
-
 import { SudokuApiService, Difficulty } from '@sudoku/api';
 import { GameStateService } from '@sudoku/game-state';
 import { BoardComponent } from '@sudoku/board';

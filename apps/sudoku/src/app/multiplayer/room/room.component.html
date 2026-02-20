@@ -5,7 +5,10 @@
         <mat-icon>arrow_back</mat-icon>
       </a>
       <div>
-        <h1>Room</h1>
+        <h1>
+          Room
+          <span class="difficulty-badge">{{ difficulty() | titlecase }}</span>
+        </h1>
         <span class="room-id">{{ roomId }}</span>
       </div>
     </div>
@@ -52,6 +55,13 @@
         </span>
       </div>
 
+      <div class="numpad">
+        @for (n of [1,2,3,4,5,6,7,8,9]; track n) {
+        <button class="numpad-btn" (click)="onNumpadInput(n)">{{ n }}</button>
+        }
+        <button class="numpad-btn erase" (click)="onNumpadInput(0)">✕</button>
+      </div>
+
       <div class="action-buttons">
         <button
           mat-stroked-button
@@ -71,7 +81,7 @@
       </div>
 
       @if (isSolved()) {
-      <div class="solved-banner">🎉 Room solved!</div>
+      <div class="solved-banner">Board solved!</div>
       }
 
       <div class="players-panel">
