@@ -14,10 +14,10 @@ export class BoardComponent {
   board = input<Board>([]);
   initialBoard = input<Board>([]);
   isInvalid = input<boolean>(false);
-  selectedCell = input<{ row: number; col: number } | null>(null); // ← lifted up
+  selectedCell = input<{ row: number; col: number } | null>(null);
 
   cellChange = output<{ row: number; col: number; value: number }>();
-  cellSelect = output<{ row: number; col: number }>(); // ← new output
+  cellSelect = output<{ row: number; col: number }>();
 
   readonly rows = [0, 1, 2, 3, 4, 5, 6, 7, 8];
   readonly cols = [0, 1, 2, 3, 4, 5, 6, 7, 8];
@@ -33,7 +33,7 @@ export class BoardComponent {
 
   onCellClick(row: number, col: number): void {
     if (!this.isPrefilled(row, col)) {
-      this.cellSelect.emit({ row, col }); // ← emit to parent
+      this.cellSelect.emit({ row, col });
     }
   }
 

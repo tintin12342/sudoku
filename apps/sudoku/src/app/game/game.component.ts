@@ -28,9 +28,11 @@ import { BoardComponent } from '@sudoku/board';
   styleUrl: './game.component.scss',
 })
 export class GameComponent implements OnInit {
+  private readonly _snackBar = inject(MatSnackBar);
   protected readonly api = inject(SudokuApiService);
-  private readonly snackBar = inject(MatSnackBar);
   readonly gameState = inject(GameStateService);
+
+  private readonly _resetStatuses = ['invalid', 'broken', 'unsolvable'];
 
   readonly difficulties: Difficulty[] = ['easy', 'medium', 'hard', 'random'];
   readonly selectedDifficulty = signal<Difficulty>('easy');
@@ -45,7 +47,7 @@ export class GameComponent implements OnInit {
       const board = await this.api.getBoard(this.selectedDifficulty());
       this.gameState.initGame(board, this.selectedDifficulty());
     } catch {
-      this.snackBar.open('Failed to load board. Please try again.', 'Retry', {
+      this._snackBar.open('Failed to load board. Please try again.', 'Retry', {
         duration: 4000,
       });
     }
@@ -58,26 +60,26 @@ export class GameComponent implements OnInit {
       switch (result.status) {
         case 'solved':
           this.gameState.setStatus('solved');
-          this.snackBar.open('Congratulations! Puzzle solved!', 'Close', {
+          this._snackBar.open('Congratulations! Puzzle solved!', 'Close', {
             duration: 5000,
           });
           break;
 
         case 'broken':
           this.gameState.setStatus('broken');
-          this.snackBar.open('Board is broken.', 'Close', {
+          this._snackBar.open('Board is broken.', 'Close', {
             duration: 4000,
           });
           break;
 
         default:
           this.gameState.setStatus('invalid');
-          this.snackBar.open('Board is invalid. Keep trying!', 'Close', {
+          this._snackBar.open('Board is invalid. Keep trying!', 'Close', {
             duration: 3000,
           });
       }
     } catch {
-      this.snackBar.open('Validation failed. Try again.', 'Close', {
+      this._snackBar.open('Validation failed. Try again.', 'Close', {
         duration: 3000,
       });
     }
@@ -90,25 +92,39 @@ export class GameComponent implements OnInit {
       switch (result.status) {
         case 'solved':
           this.gameState.applySolution(result.solution);
-          this.snackBar.open('Board solved!', 'Close', { duration: 3000 });
+          this._snackBar.open('Board solved!', 'Close', { duration: 3000 });
           break;
 
         case 'unsolvable':
           this.gameState.setStatus('unsolvable');
-          this.snackBar.open('This board has no solution.', 'Close', {
+          this._snackBar.open('This board has no solution.', 'Close', {
             duration: 4000,
           });
           break;
 
         default:
           this.gameState.setStatus('broken');
-          this.snackBar.open('Board is broken and cannot be solved.', 'Close', {
-            duration: 4000,
-          });
+          this._snackBar.open(
+            'Board is broken and cannot be solved.',
+            'Close',
+            {
+              duration: 4000,
+            }
+          );
           break;
       }
     } catch {
-      this.snackBar.open('Could not solve board.', 'Close', { duration: 3000 });
+      this._snackBar.open('Could not solve board.', 'Close', {
+        duration: 3000,
+      });
+    }
+  }
+
+  onCellSelect(cell: { row: number; col: number } | null): void {
+    this.selectedCell.set(cell);
+
+    if (this._resetStatuses.includes(this.gameState.gameStatus())) {
+      this.gameState.setStatus('playing');
     }
   }
 

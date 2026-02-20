@@ -6,4 +6,16 @@ export const appRoutes: Routes = [
     loadComponent: () =>
       import('./game/game.component').then((m) => m.GameComponent),
   },
+  {
+    path: 'multiplayer',
+    loadComponent: () =>
+      import('./multiplayer/lobby/lobby.component').then(
+        (m) => m.LobbyComponent
+      ),
+  },
+  {
+    path: 'multiplayer/:roomId',
+    loadComponent: () =>
+      import('./multiplayer/room/room.component').then((m) => m.RoomComponent),
+  },
 ];

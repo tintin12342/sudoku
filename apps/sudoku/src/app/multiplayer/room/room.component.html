@@ -1,0 +1,90 @@
+<div class="page-wrapper">
+  <header class="room-header">
+    <div class="header-left">
+      <a mat-icon-button routerLink="/multiplayer" matTooltip="Back to lobby">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <div>
+        <h1>Room</h1>
+        <span class="room-id">{{ roomId }}</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="player-dots">
+        @for (p of players(); track p.name) {
+        <span
+          class="player-dot"
+          [style.background]="p.color"
+          [matTooltip]="p.name"
+        ></span>
+        }
+      </div>
+
+      <button mat-stroked-button (click)="copyInviteLink()">
+        <mat-icon>link</mat-icon>
+        Invite
+      </button>
+    </div>
+  </header>
+
+  <div class="game-layout">
+    @if (isLoading()) {
+    <div class="spinner-container">
+      <mat-spinner diameter="60" />
+    </div>
+    } @else {
+    <app-board
+      [board]="board()"
+      [initialBoard]="initialBoard()"
+      [isInvalid]="status() === 'invalid'"
+      [selectedCell]="selectedCell()"
+      (cellChange)="onCellChange($event)"
+      (cellSelect)="onCellSelect($event)"
+    />
+    }
+
+    <div class="side-panel">
+      <div class="status-row">
+        <span class="status-label">Status</span>
+        <span class="status-chip" [ngClass]="'status-' + status()">
+          {{ status() | titlecase }}
+        </span>
+      </div>
+
+      <div class="action-buttons">
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="onValidate()"
+          [disabled]="isLoading() || isSolved()"
+        >
+          Validate
+        </button>
+        <button
+          mat-stroked-button
+          (click)="onSolve()"
+          [disabled]="isLoading() || isSolved()"
+        >
+          Solve
+        </button>
+      </div>
+
+      @if (isSolved()) {
+      <div class="solved-banner">🎉 Room solved!</div>
+      }
+
+      <div class="players-panel">
+        <span class="panel-label">Players online</span>
+        <ul class="player-list">
+          @for (p of players(); track p.name) {
+          <li>
+            <span class="dot" [style.background]="p.color"></span>
+            {{ p.name }}
+          </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

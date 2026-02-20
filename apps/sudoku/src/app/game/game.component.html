@@ -8,6 +8,7 @@
       @if (gameState.isPlaying()) {
       <span class="timer">{{ formatTime(gameState.elapsedSeconds()) }}</span>
       }
+      <a mat-stroked-button routerLink="/multiplayer">Multiplayer</a>
     </div>
   </header>
 
@@ -23,7 +24,7 @@
       [isInvalid]="gameState.gameStatus() === 'invalid'"
       [selectedCell]="selectedCell()"
       (cellChange)="onCellChange($event)"
-      (cellSelect)="selectedCell.set($event)"
+      (cellSelect)="onCellSelect($event)"
     />
     }
 
