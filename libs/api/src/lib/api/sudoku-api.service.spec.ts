@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import {
   HttpTestingController,
   provideHttpClientTesting,
+  TestRequest,
 } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { SudokuApiService } from './sudoku-api.service';
@@ -36,7 +37,7 @@ const solvedBoard: Board = [
   [3, 4, 5, 2, 8, 6, 1, 7, 9],
 ];
 
-const flushError = (req: any): void =>
+const flushError = (req: TestRequest): void =>
   req.flush('Error', { status: 500, statusText: 'Server Error' });
 
 describe('SudokuApiService', () => {
@@ -89,7 +90,9 @@ describe('SudokuApiService', () => {
       const promise = service.getBoard('easy');
       flushError(httpMock.expectOne(`${BASE_URL}/board?difficulty=easy`));
 
-      await promise.catch(() => {});
+      await promise.catch(() => {
+        // expected error for test
+      });
       expect(service.isLoading()).toBe(false);
       expect(service.error()).toBe('Failed to fetch board. Please try again.');
     });
@@ -97,7 +100,9 @@ describe('SudokuApiService', () => {
     it('should clear error signal on new request', async () => {
       const first = service.getBoard('easy');
       flushError(httpMock.expectOne(`${BASE_URL}/board?difficulty=easy`));
-      await first.catch(() => {});
+      await first.catch(() => {
+        // expected rejection for this test, error is handled by the service
+      });
 
       const second = service.getBoard('easy');
       expect(service.error()).toBeNull();
@@ -158,7 +163,9 @@ describe('SudokuApiService', () => {
       const promise = call(service);
       flushError(httpMock.expectOne(url));
 
-      await promise.catch(() => {});
+      await promise.catch(() => {
+        // expected error for test
+      });
       expect(service.isLoading()).toBe(false);
       expect(service.error()).toBe(errorMessage);
     });
@@ -166,7 +173,9 @@ describe('SudokuApiService', () => {
     it('should clear error signal on new request', async () => {
       const first = call(service);
       flushError(httpMock.expectOne(url));
-      await first.catch(() => {});
+      await first.catch(() => {
+        // expected rejection for this test, error is handled by the service
+      });
 
       const second = call(service);
       expect(service.error()).toBeNull();

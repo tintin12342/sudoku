@@ -2,7 +2,7 @@ import { Component, input, output, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-cell',
+  selector: 'lib-cell',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './cell.component.html',

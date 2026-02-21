@@ -4,7 +4,7 @@ import { Board } from '@sudoku/api';
 import { CellComponent } from '../cell/cell.component';
 
 @Component({
-  selector: 'app-board',
+  selector: 'lib-board',
   standalone: true,
   imports: [CommonModule, CellComponent],
   templateUrl: './board.component.html',
