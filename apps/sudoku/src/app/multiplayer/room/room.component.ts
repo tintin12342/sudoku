@@ -69,7 +69,7 @@ export class RoomComponent implements OnInit, OnDestroy {
       await this._multiplayer.registerPlayer(this.roomId, this.playerId);
     } catch (e: any) {
       if (e.message === 'Room is full') {
-        this._snackBar.open('🚫 Room is full (max 4 players).', 'Close', {
+        this._snackBar.open('Room is full (max 4 players).', 'Close', {
           duration: 4000,
         });
         this._router.navigate(['/multiplayer']);

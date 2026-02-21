@@ -3,27 +3,23 @@ import { Board, Difficulty, GameStatus } from '@sudoku/api';
 
 @Injectable({ providedIn: 'root' })
 export class GameStateService {
-  // Core state signals
+  private _timerInterval: ReturnType<typeof setInterval> | null = null;
+
   readonly board = signal<Board>([]);
   readonly initialBoard = signal<Board>([]);
   readonly difficulty = signal<Difficulty>('easy');
   readonly gameStatus = signal<GameStatus>('idle');
   readonly elapsedSeconds = signal<number>(0);
 
-  // Computed signals
   readonly isPlaying = computed(() => this.gameStatus() === 'playing');
   readonly isSolved = computed(() => this.gameStatus() === 'solved');
   readonly isUnsolvable = computed(() => this.gameStatus() === 'unsolvable');
-
   readonly isCellPrefilled = computed(
     () => (row: number, col: number) => this.initialBoard()[row]?.[col] !== 0
   );
-
   readonly isBoardComplete = computed(() =>
     this.board().every((row) => row.every((cell) => cell !== 0))
   );
-
-  private timerInterval: ReturnType<typeof setInterval> | null = null;
 
   initGame(board: Board, difficulty: Difficulty): void {
     this.board.set(board.map((row) => [...row]));
@@ -74,15 +70,15 @@ export class GameStateService {
 
   private _startTimer(): void {
     this._stopTimer();
-    this.timerInterval = setInterval(() => {
+    this._timerInterval = setInterval(() => {
       this.elapsedSeconds.update((s) => s + 1);
     }, 1000);
   }
 
   private _stopTimer(): void {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-      this.timerInterval = null;
+    if (this._timerInterval) {
+      clearInterval(this._timerInterval);
+      this._timerInterval = null;
     }
   }
 }

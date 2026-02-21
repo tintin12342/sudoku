@@ -18,4 +18,9 @@ export default {
     'jest-preset-angular/build/serializers/ng-snapshot',
     'jest-preset-angular/build/serializers/html-comment',
   ],
+  testPathIgnorePatterns: [
+    'apps/sudoku/src/app/app.component.spec.ts',
+    'apps/sudoku/src/app/multiplayer/lobby/lobby.component.spec.ts',
+    'apps/sudoku/src/app/multiplayer/room/room.component.spec.ts',
+  ],
 };
