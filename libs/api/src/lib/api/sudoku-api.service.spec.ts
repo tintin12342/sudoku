@@ -7,6 +7,7 @@ import {
 import { provideHttpClient } from '@angular/common/http';
 import { SudokuApiService } from './sudoku-api.service';
 import { Board } from '../model/sudoku-api.model';
+import { SUDOKU_API_BASE_URL } from '../model/api-token';
 
 const BASE_URL = 'https://sugoku.onrender.com';
 
@@ -50,6 +51,7 @@ describe('SudokuApiService', () => {
         SudokuApiService,
         provideHttpClient(),
         provideHttpClientTesting(),
+        { provide: SUDOKU_API_BASE_URL, useValue: BASE_URL },
       ],
     });
     service = TestBed.inject(SudokuApiService);
