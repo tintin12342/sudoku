@@ -9,11 +9,12 @@ import {
   SudokuRequest,
   ValidateResponse,
 } from '../model/sudoku-api.model';
+import { SUDOKU_API_BASE_URL } from '../model/api-token';
 
 @Injectable({ providedIn: 'root' })
 export class SudokuApiService {
   private readonly _http = inject(HttpClient);
-  private readonly _baseUrl = 'https://sugoku.onrender.com';
+  private readonly _baseUrl = inject(SUDOKU_API_BASE_URL);
 
   readonly isLoading = signal(false);
   readonly error = signal<string | null>(null);

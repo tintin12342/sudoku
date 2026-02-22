@@ -6,6 +6,7 @@
 
 export const environment = {
   production: false,
+  baseUrl: 'https://sugoku.onrender.com',
   firebase: {
     apiKey: 'AIzaSyB4MkEYKzCeqFTzcDKwTLFyY_d4R55sfnc',
     authDomain: 'sudoku-e6897.firebaseapp.com',

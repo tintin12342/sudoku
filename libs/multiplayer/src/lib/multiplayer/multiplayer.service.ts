@@ -33,7 +33,7 @@ export class MultiplayerService {
   private readonly _db = inject(Database);
 
   private readonly MAX_PLAYERS = 4 as const;
-  private readonly playerColors = [
+  private readonly PLAYER_COLORS = [
     '#8e24aa',
     '#1e88e5',
     '#43a047',
@@ -56,18 +56,6 @@ export class MultiplayerService {
     return roomId;
   }
 
-  joinRoom(roomId: string): Observable<RoomState | null> {
-    return new Observable((observer) => {
-      const roomRef = ref(this._db, `rooms/${roomId}`);
-      const unsubscribe = onValue(
-        roomRef,
-        (snapshot) => observer.next(snapshot.val() as RoomState),
-        (error) => observer.error(error)
-      );
-      return () => unsubscribe();
-    });
-  }
-
   async roomExists(roomId: string): Promise<boolean> {
     const snapshot = await get(ref(this._db, `rooms/${roomId}`));
     return snapshot.exists();
@@ -85,8 +73,8 @@ export class MultiplayerService {
 
     const takenColors = new Set(existingPlayers.map((p) => p.color));
     const availableColor =
-      this.playerColors.find((c) => !takenColors.has(c)) ??
-      this.playerColors[0];
+      this.PLAYER_COLORS.find((c) => !takenColors.has(c)) ??
+      this.PLAYER_COLORS[0];
 
     const playerRef = ref(this._db, `rooms/${roomId}/players/${playerId}`);
 
@@ -97,6 +85,18 @@ export class MultiplayerService {
     });
 
     onDisconnect(playerRef).remove();
+  }
+
+  joinRoom(roomId: string): Observable<RoomState | null> {
+    return new Observable((observer) => {
+      const roomRef = ref(this._db, `rooms/${roomId}`);
+      const unsubscribe = onValue(
+        roomRef,
+        (snapshot) => observer.next(snapshot.val() as RoomState),
+        (error) => observer.error(error)
+      );
+      return () => unsubscribe();
+    });
   }
 
   removePlayer(roomId: string, playerId: string): Promise<void> {

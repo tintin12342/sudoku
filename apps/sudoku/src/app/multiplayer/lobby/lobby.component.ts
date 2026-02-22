@@ -34,10 +34,10 @@ import { MultiplayerService } from '@sudoku/multiplayer';
   styleUrl: './lobby.component.scss',
 })
 export class LobbyComponent {
-  private readonly router = inject(Router);
-  private readonly api = inject(SudokuApiService);
-  private readonly multiplayer = inject(MultiplayerService);
-  private readonly snackBar = inject(MatSnackBar);
+  private readonly _router = inject(Router);
+  private readonly _api = inject(SudokuApiService);
+  private readonly _multiplayer = inject(MultiplayerService);
+  private readonly _snackBar = inject(MatSnackBar);
 
   readonly difficulties: Difficulty[] = ['easy', 'medium', 'hard', 'random'];
   readonly selectedDifficulty = signal<Difficulty>('easy');
@@ -52,14 +52,14 @@ export class LobbyComponent {
   async createRoom(): Promise<void> {
     this.isCreating.set(true);
     try {
-      const board = await this.api.getBoard(this.selectedDifficulty());
-      const roomId = await this.multiplayer.createRoom(
+      const board = await this._api.getBoard(this.selectedDifficulty());
+      const roomId = await this._multiplayer.createRoom(
         board,
         this.selectedDifficulty()
       );
-      this.router.navigate(['/multiplayer', roomId]);
+      this._router.navigate(['/multiplayer', roomId]);
     } catch {
-      this.snackBar.open('Failed to create room. Try again.', 'Close', {
+      this._snackBar.open('Failed to create room. Try again.', 'Close', {
         duration: 3000,
       });
       this.isCreating.set(false);
@@ -72,11 +72,11 @@ export class LobbyComponent {
 
     this.isJoining.set(true);
     try {
-      const exists = await this.multiplayer.roomExists(roomId);
+      const exists = await this._multiplayer.roomExists(roomId);
       if (exists) {
-        this.router.navigate(['/multiplayer', roomId]);
+        this._router.navigate(['/multiplayer', roomId]);
       } else {
-        this.snackBar.open(
+        this._snackBar.open(
           'Room not found. Check the ID and try again.',
           'Close',
           {
@@ -85,7 +85,7 @@ export class LobbyComponent {
         );
       }
     } catch {
-      this.snackBar.open('Could not check room. Try again.', 'Close', {
+      this._snackBar.open('Could not check room. Try again.', 'Close', {
         duration: 3000,
       });
     } finally {
