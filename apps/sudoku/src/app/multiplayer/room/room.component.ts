@@ -67,8 +67,8 @@ export class RoomComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     try {
       await this._multiplayer.registerPlayer(this.roomId, this.playerId);
-    } catch (e: any) {
-      if (e.message === 'Room is full') {
+    } catch (e: unknown) {
+      if (e instanceof Error && e.message === 'Room is full') {
         this._snackBar.open('Room is full (max 4 players).', 'Close', {
           duration: 4000,
         });
@@ -181,7 +181,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     const key = 'sudoku_player_id';
     let id = sessionStorage.getItem(key);
     if (!id) {
-      id = Math.random().toString(36).slice(2, 9);
+      id = crypto.randomUUID();
       sessionStorage.setItem(key, id);
     }
     return id;
