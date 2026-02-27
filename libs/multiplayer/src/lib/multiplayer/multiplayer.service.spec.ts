@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Database } from '@angular/fire/database';
+import { Database, DatabaseReference } from '@angular/fire/database';
 import {
   MultiplayerService,
   RoomState,
@@ -30,11 +30,11 @@ import {
   onDisconnect,
 } from '@angular/fire/database';
 
-const mockRef = {} as any;
+const mockRef = {} as DatabaseReference;
 const mockDb = {} as Database;
 const mockBoard: Board = Array.from({ length: 9 }, () => Array(9).fill(0));
 
-const makeSnapshot = (value: any, exists = true) => ({
+const makeSnapshot = (value: RoomState | null, exists = true) => ({
   val: () => value,
   exists: () => exists,
 });
@@ -149,7 +149,7 @@ describe('MultiplayerService', () => {
 
   describe('roomExists', () => {
     it('should return true when room exists', async () => {
-      (get as jest.Mock).mockResolvedValue(makeSnapshot({}, true));
+      (get as jest.Mock).mockResolvedValue(makeSnapshot(null, true));
       expect(await service.roomExists('room-1')).toBe(true);
     });
 
